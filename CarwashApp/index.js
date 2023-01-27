@@ -6,47 +6,67 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const express = require("express")
 const app = express()
 const PORT = 3026
-// const bcrypt = require("bcrypt")
-// const session = require("express-session")
-// const cookieParser = require("cookie-parser")
-// const bodyParser = require("body-parser");
-
-
 app.use(express.json())
-
-// app.use(
-//     bodyParser.urlencoded({
-//         extended: true,
-//     })
-// )
-
-// app.use(bodyParser.json())
-// app.use(cookieParser())
-// app.use(session({
-//     secret: 'secret',
-//     resave: false,
-//     saveUninitialize: true,
-//     cookie: {
-//         secure: false,
-//         maxAge: 2592000000
-//     }
-// }))
+app.use(express.urlencoded({ extended: true }))
+app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
+app.use(express.static((__dirname +'/public')));
 
+
+app.get("/", (req, res) => {
+    res.render("pages/index")
+})
 app.get("/login", (req, res) => {
     res.render("pages/login")
 })
-app.post("/login", async (req, res) => {
-    const {userName, passWord,firstName,lastName} = req.body
-    console.log(req.body)
-  console.log("route triggered")
-    const { data, error } = await supabase
-    .from('Members')
-    .insert([
-      { userName, firstName, lastName, passWord },
+
+app.post("/signup", async (req, res) => {
+    const {email, password,} = req.body
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password
+    })
+    if(data){
+      res.redirect("pages/index")
+      return
+    } else {
+      res.send("Error signing up")
+    }
+})
+
+app.post('/signin', async (req, res) => {
+  const { email, password } = req.body
+  try {
+    let { data, error } = await supabase.auth.signInWithPassword({
+      email ,
+      password
+    })
+    if(data){
+      res.render("pages/signedin",{user:data})
+      return
+    }
+  } catch (error) {
+      res.status(400).send(error)
+  }
+})
+
+app.post('/appointments', async (req, res) => {
+  const { customer_id, package_id } = req.body
+  try {
+    let { data, error } = await supabase
+    .from('Appointements')
+    .insert([{
+      customer_id,
+      package_id
+    }
     ])
-  console.log(error)
-    res.send(data)
+    if(data){
+      res.render("pages/index",{user:data})
+      return
+    }
+  } catch (error) {
+      res.status(400).send(error)
+  }
 })
 
 app.listen(PORT, console.log(`Listening on port ${PORT}`))
