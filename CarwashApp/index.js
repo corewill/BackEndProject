@@ -5,7 +5,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const express = require("express")
 const app = express()
-const PORT = 3026
+const PORT = 3025
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.set("views", __dirname + "/views")

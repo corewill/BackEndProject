@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build":"tailwindcss -i ./input.css -o ./public/styles.css",
-    "watch":"tailwindcss -i ./input.css -o ./public/styles.css --watch" 
+    "build": "tailwindcss -i ./input.css -o ./public/styles.css",
+    "watch": "tailwindcss -i ./input.css -o ./public/styles.css --watch"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
+    "nodemon": "^2.0.20",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4"
   }
