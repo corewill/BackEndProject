@@ -20,6 +20,14 @@ app.get("/login", (req, res) => {
     res.render("pages/login")
 })
 
+app.get("/signup", (req, res) => {
+    res.render("pages/signup")
+})
+
+app.get("/signin", (req, res) => {
+    res.render("pages/login")
+})
+
 app.post("/signup", async (req, res) => {
     const {email, password,} = req.body
     const { data, error } = await supabase.auth.signUp({
@@ -27,7 +35,7 @@ app.post("/signup", async (req, res) => {
       password
     })
     if(data){
-      res.redirect("pages/index")
+      res.redirect("pages/login")
       return
     } else {
       res.send("Error signing up")
@@ -50,23 +58,65 @@ app.post('/signin', async (req, res) => {
   }
 })
 
-app.post('/appointments', async (req, res) => {
-  const { customer_id, package_id } = req.body
+app.post("/Appointments", async (req, res) => {
+  const { date, customer_id, package_id } = req.body;
   try {
-    let { data, error } = await supabase
-    .from('Appointements')
-    .insert([{
-      customer_id,
-      package_id
-    }
-    ])
-    if(data){
-      res.render("pages/index",{user:data})
-      return
+    const { data, error } = await supabase.from("Appointements").insert([
+      {
+        date,
+        customer_id,
+        package_id,
+      },
+    ]);
+    if (data) {
+      res.status(200).render("pages/index", { user: data });
+      return;
+    } else {
+      res.status(400).send(error);
     }
   } catch (error) {
-      res.status(400).send(error)
+    res.status(400).send(error);
   }
-})
+});
+
+app.post("/logout", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    let { data, error } = await supabase.auth.signOut();
+    ({
+      email,
+      password,
+    });
+    if (data) {
+      res.render("pages/signin", { user: data });
+      return;
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.post("/Packages", async (req, res) => {
+  const { name, description, Price } = req.body;
+  try {
+    const { data, error } = await supabase.from("Packages").insert([
+      {
+        name,
+        description,
+        Price,
+      },
+    ]);
+    res.json({
+      message: " Package Added",
+    });
+    res.status(200);
+    res.render("pages/index", { user: data });
+    return;
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+
 
 app.listen(PORT, console.log(`Listening on port ${PORT}`))
