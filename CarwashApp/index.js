@@ -27,7 +27,7 @@ app.post("/signup", async (req, res) => {
       password
     })
     if(data){
-      res.redirect("pages/index")
+      res.redirect("pages/index") 
       return
     } else {
       res.send("Error signing up")
@@ -35,7 +35,7 @@ app.post("/signup", async (req, res) => {
 })
 
 app.post('/signin', async (req, res) => {
-  const { email, password } = req.body
+  const { email, password } = req.body 
   try {
     let { data, error } = await supabase.auth.signInWithPassword({
       email ,
