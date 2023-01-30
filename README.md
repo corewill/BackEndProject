@@ -2,7 +2,7 @@
 # Car Wash Appointment Site
 "Become a member schedule appointments same day or in advance"
 ## Project Details
-I love fitness and in particular challenging myself to reach goals
+using a database to create update and track tables
 ### Stack:
 * html
 * javascript
