@@ -1,6 +1,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = "https://hrhviqtzmgmsttkvotvq.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyaHZpcXR6bWdtc3R0a3ZvdHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzQ2NjIzNjYsImV4cCI6MTk5MDIzODM2Nn0.AiiB8o314C_rkOdneQk_vwvzxXO4W3lwHN-8-_NKEsA";
+const bodyParser = require("body-parser");
 // const options = {
 //   schema: 'public',
 //   headers: { 'x-my-custom-header': 'my-app-name' },
@@ -19,6 +20,10 @@ app.use(express.json())
 app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
 app.use(express.static((__dirname +'/public')));
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 
 app.get("/", (req, res) => {
@@ -48,11 +53,14 @@ app.get("/Appointments", (req, res) => {
 
 app.post("/signup", async (req, res) => {
     const { email, password,} = req.body
+    console.log(password)
     const { data, error } = await supabase.auth.signUp({
       
       email,
       password
+
     })
+    console.log(error)
     if(data){
       res.redirect("/login")
       return
@@ -65,15 +73,17 @@ app.post('/signin', async (req, res) => {
   const { email, password } = req.body
 
   try {
-    const user = await supabase.auth.signInWithPassword({ email, password })
-    
+    const {user, error} = await supabase.auth.signInWithPassword({ email, password })
+    console.log(error)
     
     if(user.data){
-      res.render("pages/signedin",{user: user.data})
+      res.render("pages/signedin")
       return
     }}
    catch (error) {
+
       res.status(400).send(error)
+
   }})
 
 app.post("/signedin", async (req, res) => {
