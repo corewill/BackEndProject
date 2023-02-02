@@ -40,6 +40,9 @@ app.get("/signup", (req, res) => {
 app.get("/signin", (req, res) => {
     res.render("pages/login")
 })
+app.get("/Appointements", (req, res) => {
+    res.render("pages/Appointements")
+})
 
 app.get("/signedin", (req, res) => {
     res.render("pages/signedin")
